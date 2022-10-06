@@ -1,6 +1,6 @@
 import './App.css';
 import { IfcViewerAPI } from 'web-ifc-viewer';
-import { Backdrop, CircularProgress, IconButton } from '@mui/material';
+import { Backdrop, CircularProgress, IconButton, ButtonGroup, Switch } from '@mui/material';
 import React from 'react';
 import Dropzone from 'react-dropzone';
 import BcfDialog from './components/BcfDialog';
@@ -13,6 +13,9 @@ import AccessibilityNewOutlinedIcon from '@mui/icons-material/AccessibilityNewOu
 import { Color } from 'three';
 import Footer from './components/footer';
 import Header from './components/header';
+
+
+
 
 class App extends React.Component {
 
@@ -50,12 +53,12 @@ class App extends React.Component {
 
 
         async function setUpMultiThreading() {
-            const manager = viewer.IFC.ifcLoader.ifcManager;
+            const manager = viewer.IFC.loader.ifcManager;
             // These paths depend on how you structure your project
             await manager.useWebWorkers(true, '../IFCWorker.js');
         }
 
-        // setUpMultiThreading();
+        setUpMultiThreading();
 
     }
 

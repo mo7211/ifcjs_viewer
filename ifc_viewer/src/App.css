@@ -201,3 +201,7 @@ a {
     transform: rotate(360deg);
   }
 }
+
+#viewer-container {
+  display: none;
+}
