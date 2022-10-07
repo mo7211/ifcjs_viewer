@@ -2,7 +2,6 @@ import { useDropzone } from 'react-dropzone';
 import { useCallback, useEffect, useState } from 'react';
 import { BcfReader } from '@parametricos/bcf-js';
 import { makeStyles, withStyles } from 'tss-react/mui'
-// import { makeStyles } from '@material-ui/core/styles';
 import { Card, CardActionArea, CardContent, CardMedia, Button } from '@mui/material';
 
 import { Box, Dialog, DialogActions, DialogContent, DialogTitle, Grid, Typography } from '@mui/material';

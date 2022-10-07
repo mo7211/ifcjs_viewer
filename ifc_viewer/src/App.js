@@ -1,6 +1,6 @@
 import './App.css';
-import { IfcViewerAPI } from 'web-ifc-viewer';
-import { Backdrop, CircularProgress, IconButton, ButtonGroup, Switch } from '@mui/material';
+import { IfcViewerAPI, NavigationModes } from 'web-ifc-viewer';
+import { Backdrop, CircularProgress, IconButton, ButtonGroup, Switch, touchRippleClasses } from '@mui/material';
 import React from 'react';
 import Dropzone from 'react-dropzone';
 import BcfDialog from './components/BcfDialog';
@@ -23,7 +23,8 @@ class App extends React.Component {
         bcfDialogOpen: false,
         loaded: false,
         loading_ifc: false,
-        models: [null],
+        camera_OrbitMode: true,
+        models: [],
         properties: []
     };
 
@@ -41,9 +42,6 @@ class App extends React.Component {
 
         let color = new Color("rgb(255, 255, 255)")
         viewer.context.getScene().background = color;
-
-        // viewer.shadowDropper.renderShadow(0);
-        viewer.context.renderer.postProduction.active = true;
 
         this.viewer = viewer;
 
@@ -66,8 +64,18 @@ class App extends React.Component {
 
     onDrop = async (files) => {
         this.setState({ loading_ifc: true })
-        const models = [await this.viewer.IFC.loadIfc(files[0], true)];
-        const properties = await this.viewer.IFC.properties.serializeAllProperties(models);
+        const viewer = this.viewer;
+        const models = [await viewer.IFC.loadIfc(files[0], true)];
+
+        // Add dropped shadow and post-processing efect
+        if (models.length !== 0) {
+            for (let i = 0; i < models.length; i++) {
+                viewer.shadowDropper.renderShadow(i);
+            }
+        }
+        viewer.context.renderer.postProduction.active = true;
+
+        const properties = await viewer.IFC.properties.serializeAllProperties(models);
         this.setState({ loaded: true, loading_ifc: false, models, properties });
     };
 
@@ -97,6 +105,21 @@ class App extends React.Component {
         this.viewer.currentViewpoint = viewpoint;
     };
 
+    handleFirstPersonMode = () => {
+        const camera = this.viewer.context.getIfcCamera();
+
+        if (this.state.camera_OrbitMode) {
+            camera.setNavigationMode(NavigationModes.FirstPerson);
+        }
+        else {
+            camera.setNavigationMode(NavigationModes.Orbit);
+            camera.cameraControls.setTarget(0, 0, 0, true);
+        }
+        this.state.camera_OrbitMode = !this.state.camera_OrbitMode;
+    }
+
+
+
     render() {
         return (
             <>
@@ -118,7 +141,7 @@ class App extends React.Component {
                         <IconButton onClick={this.handleOpenBcfDialog}>
                             <FeedbackOutlinedIcon />
                         </IconButton>
-                        <IconButton>
+                        <IconButton onClick={this.handleFirstPersonMode}>
                             <AccessibilityNewOutlinedIcon />
                         </IconButton>
                     </aside>
