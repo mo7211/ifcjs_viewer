@@ -18,7 +18,7 @@ class Header extends Component {
             </a>
           </div>
 
-          <Menu />
+          {/* <Menu /> */}
           <div id="breadcrumb"></div>
         </div>
       </header>
